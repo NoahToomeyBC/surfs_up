@@ -26,7 +26,6 @@ Station = Base.classes.station
 
 #create a session
 
-session=Session(engine)
 
 # Define flask app
 
@@ -37,13 +36,15 @@ app=Flask(__name__)
 
 # Create welcome route function
 def welcome():
+    session=Session(engine)
+    session.close()
     return(
     '''
-    Welcome to the Climate Analysis API!
-    Available Routes:
-    /api/v1.0/precipitation
-    /api/v1.0/stations
-    /api/v1.0/tobs
+    Welcome to the Climate Analysis API!<br/>
+    Available Routes:<br/>
+    /api/v1.0/precipitation<br/>
+    /api/v1.0/stations<br/>
+    /api/v1.0/tobs<br/>
     /api/v1.0/temp/start/end
     ''')
 
@@ -52,10 +53,12 @@ def welcome():
 
 # Create precipitation route function
 def precipitation():
+   session=Session(engine) 
    prev_year = dt.date(2017, 8, 23) - dt.timedelta(days=365)
    precipitation = session.query(Measurement.date, Measurement.prcp).\
     filter(Measurement.date >= prev_year).all()
    precip = {date: prcp for date, prcp in precipitation}
+   session.close()
    return jsonify(precip)
 
 # Setup stations route
@@ -63,8 +66,10 @@ def precipitation():
 
 # Create station route function
 def stations():
+    session=Session(engine)
     results = session.query(Station.station).all()
     stations = list(np.ravel(results))
+    session.close()
     return jsonify(stations)
 
 # Setup temp route
@@ -72,11 +77,13 @@ def stations():
 
 # Create tobs route function
 def temp_monthly():
+    session=Session(engine)
     prev_year = dt.date(2017, 8, 23) - dt.timedelta(days=365)
     results = session.query(Measurement.tobs).\
         filter(Measurement.station == 'USC00519281').\
         filter(Measurement.date >= prev_year).all()
     temps = list(np.ravel(results))
+    session.close()
     return jsonify(temps=temps)
 
 # Setup start and end date route for temp
@@ -85,6 +92,7 @@ def temp_monthly():
 
 # Create a stats function
 def stats(start=None, end=None):
+    session=Session(engine)
     sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
 
     if not end:
@@ -97,4 +105,8 @@ def stats(start=None, end=None):
         filter(Measurement.date >= start).\
         filter(Measurement.date <= end).all()
     temps = list(np.ravel(results))
+    session.close()
     return jsonify(temps)
+
+if __name__ == "__main__":
+    app.run(debug=True)
