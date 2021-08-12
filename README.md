@@ -11,7 +11,9 @@ Luckily, Oahu is fairly temperate year round so the differences in weather are q
 
 - In addition to lower temperatures, there are also spikes in precipitation that can be observed in December's weather patterns compared to June's fairly dry climate.
 
-
+<p align="center">
+<img width="432" height="288" src="https://user-images.githubusercontent.com/85508764/129216858-17916695-760c-4474-84fb-b2f5dfdb9534.png">
+</p>
 
 - Finally, the bottom 25% of temperatures in June is slightly higher than that of Decembers. Once again, however, the differences are well within an acceptable range that it won't make a large difference.
 
